@@ -1,0 +1,115 @@
+/* Set box-sizing for all elements */
+* {
+  box-sizing: border-box;
+}
+
+/* Grid styles */
+.grid {
+  display: grid;
+  grid-template-columns: 100vw;
+}
+.row {
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: center;
+}
+
+/* Nav Bar styles */
+.navBar {
+  display: flex;
+  flex-wrap: wrap;
+  background-color: rgb(18, 65, 92);
+  color: white;
+  align-items: center;
+  font-size: 25px;
+  font-family: Arial, Helvetica, sans-serif;
+  width: 100vw;
+}
+.navBar > p {
+  display: inline-block;
+  margin-left: 25px;
+  margin-right: 25px;
+  font-weight: bold;
+}
+
+/* General Button styles */
+button {
+  background-color: rgb(18, 65, 92);
+  color: white;
+  border: none;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 15px;
+  transition-duration: 0.3s;
+  padding: 15px 25px;
+  margin: 0px 25px 0px 25px;
+}
+button:hover {
+  color: lightskyblue;
+}
+button:disabled {
+  color: rgb(138, 138, 138);
+}
+
+/* Dropdown styles */
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  z-index: 1;
+}
+
+.dropdown:hover .dropdown-content {
+  display: flex;
+  flex-direction: column;
+}
+
+.dropdown p {
+  color: white;
+  padding: 15px 25px;
+  font-size: 15px;
+  margin: 0px 25px 0px 25px;
+}
+.dropdown p:hover {
+  color: lightskyblue;
+}
+
+.dropdown-btn {
+  background-color: rgb(63, 109, 138);
+}
+
+.dropdown-btn:hover {
+  background-color: rgb(18, 65, 92);
+}
+
+/* Visualize button styles */
+.visualize-btn {
+  background-color: rgb(40, 162, 233);
+  border-radius: 15px;
+  padding-left: 50px;
+  padding-right: 50px;
+}
+
+.visualize-btn:hover {
+  background-color: rgb(77, 175, 231);
+  color: white;
+}
+
+/* Animation Delay button styles */
+.fast-btn {
+  background-color: green;
+  border-radius: 15px;
+}
+.average-btn {
+  background-color: rgb(175, 175, 55);
+  border-radius: 15px;
+}
+.slow-btn {
+  background-color: rgb(194, 63, 63);
+  border-radius: 15px;
+}
