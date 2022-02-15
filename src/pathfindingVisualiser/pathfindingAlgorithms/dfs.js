@@ -12,6 +12,7 @@
     }
     return;
   }
+  
   // Returns a list of neighbors around node that are unvisited
   function getNeighbors(node, grid) {
     const neighbors = []; // Array of the neighbouring nodes
@@ -28,5 +29,3 @@
     dfsRecursive(grid, animations, startNode, endNode, visitedOrder);
     return visitedOrder;
   }
-  
-  // test
