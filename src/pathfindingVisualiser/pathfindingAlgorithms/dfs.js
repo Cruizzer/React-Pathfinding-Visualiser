@@ -4,7 +4,7 @@
     if (animations) node.isAnimated = true;
     visitedOrder.push(node);
     let neighbors = getNeighbors(node, grid);
-    while (neighbors.length !== 0) {
+    while (neighbors.length !== 0) { // Base case
       if (visitedOrder[visitedOrder.length - 1] === endNode) return true;
       let working = neighbors.pop();
       node.previousNode = working;
@@ -28,3 +28,5 @@
     dfsRecursive(grid, animations, startNode, endNode, visitedOrder);
     return visitedOrder;
   }
+  
+  // test
