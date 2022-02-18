@@ -39,11 +39,11 @@ import Queue from "../dataStructures/queue";
   // Returns a list of neighbours around node that are unvisited
   function getNeighbours(grid, node) {
     const neighbours = [];
-    const { col, row } = node;
-    if (col > 0) neighbours.push(grid[row][col - 1]);
-    if (row < grid.length - 1) neighbours.push(grid[row + 1][col]);
-    if (col < grid[0].length - 1) neighbours.push(grid[row][col + 1]);
-    if (row > 0) neighbours.push(grid[row - 1][col]);
+    const { column, row } = node;
+    if (column > 0) neighbours.push(grid[row][column - 1]);
+    if (row < grid.length - 1) neighbours.push(grid[row + 1][column]);
+    if (column < grid[0].length - 1) neighbours.push(grid[row][column + 1]);
+    if (row > 0) neighbours.push(grid[row - 1][column]);
     return neighbours.filter((node) => !node.isVisited && !node.isWall);
   }
   export function getNodesInShortestPathOrder(finishNode) {

@@ -16,6 +16,7 @@
 
 /* Nav Bar styles */
 .navBar {
+  padding-top: 15px;
   display: flex;
   flex-wrap: wrap;
   background-color: #272760;

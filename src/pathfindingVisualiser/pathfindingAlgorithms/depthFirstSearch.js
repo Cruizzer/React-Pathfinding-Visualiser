@@ -23,24 +23,24 @@
   function getNeighbours(grid, node) {
       // Array of the neighbouring nodes.
       const neighbours = [];
-      // Holds the column and row of the current node.
-      const { col, row } = node;
+      // Holds the columnumn and row of the current node.
+      const { column, row } = node;
 
       // Push the neigbouring node to the left.
-      if (col > 0) {
-          neighbours.push(grid[row][col - 1]);
+      if (column > 0) {
+          neighbours.push(grid[row][column - 1]);
       }
       // Push the neighbouring node below.
       if (row < grid.length - 1) {
-          neighbours.push(grid[row + 1][col]);
+          neighbours.push(grid[row + 1][column]);
       }
       // Push the neighbouring node the right.
-      if (col < grid[0].length - 1) {
-          neighbours.push(grid[row][col + 1]);
+      if (column < grid[0].length - 1) {
+          neighbours.push(grid[row][column + 1]);
       }
       // Push the neighbouring node above.
       if (row > 0) {
-          neighbours.push(grid[row - 1][col]);
+          neighbours.push(grid[row - 1][column]);
       }
       
       return neighbours.filter((node) => !node.isVisited && !node.isWall);

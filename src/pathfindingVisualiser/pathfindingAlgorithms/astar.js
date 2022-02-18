@@ -64,25 +64,25 @@ function aStar(grid, animations, startNode, finishNode) {
 
   // Returns a list of neighbours around node that are unvisited.
   function getNeighbours(node, grid) {
-    // Initialise neighbours node and grab the column and row property from the node in the parameter
+    // Initialise neighbours node and grab the columnumn and row property from the node in the parameter
     const neighbours = [];
-    const { col, row } = node;
+    const { column, row } = node;
 
     // Push the neighbouring node above.
     if (row > 0) {
-      neighbours.push(grid[row - 1][col]);
+      neighbours.push(grid[row - 1][column]);
     } 
     // Push the neighbouring node below.
     if (row < grid.length - 1) {
-      neighbours.push(grid[row + 1][col]);
+      neighbours.push(grid[row + 1][column]);
     }
     // Push the neigbouring node to the left.
-    if (col > 0) {
-      neighbours.push(grid[row][col - 1]);
+    if (column > 0) {
+      neighbours.push(grid[row][column - 1]);
     }
     // Push the neighbouring node to the right.
-    if (col < grid[0].length - 1) {
-      neighbours.push(grid[row][col + 1]);
+    if (column < grid[0].length - 1) {
+      neighbours.push(grid[row][column + 1]);
     }
     // Only return the neighbouring nodes that have not been visited and that is not a wall.
     return neighbours.filter((node) => !node.isVisited && !node.isWall);
@@ -103,7 +103,7 @@ function aStar(grid, animations, startNode, finishNode) {
   // Calculates the heuristic value used in the A* by using the Euclidean distance.
   function calculateHeuristicValue(node, finishNode) {
     // Pythagoras theorem, c^2 = a^2 + b^2.
-    return Math.sqrt(Math.pow(node.row - finishNode.row,2) + Math.pow(node.col - finishNode.col,2));
+    return Math.sqrt(Math.pow(node.row - finishNode.row,2) + Math.pow(node.column - finishNode.column,2));
   }
   
   // Helper function that returns the values of the astar algorithm.
