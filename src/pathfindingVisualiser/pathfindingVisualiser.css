@@ -18,7 +18,7 @@
 .navBar {
   display: flex;
   flex-wrap: wrap;
-  background-color: rgb(18, 65, 92);
+  background-color: #272760;
   color: white;
   align-items: center;
   font-size: 25px;
@@ -34,7 +34,7 @@
 
 /* General Button styles */
 button {
-  background-color: rgb(18, 65, 92);
+  background-color: #272760;
   color: white;
   border: none;
   text-align: center;
@@ -42,11 +42,11 @@ button {
   display: inline-block;
   font-size: 15px;
   transition-duration: 0.3s;
-  padding: 15px 25px;
+  padding: 15px 30px;
   margin: 0px 25px 0px 25px;
 }
 button:hover {
-  color: lightskyblue;
+  color: #0CFFE1;
 }
 button:disabled {
   color: rgb(138, 138, 138);
@@ -76,7 +76,7 @@ button:disabled {
   margin: 0px 25px 0px 25px;
 }
 .dropdown p:hover {
-  color: lightskyblue;
+  color: #ed1e79;
 }
 
 .dropdown-btn {
@@ -87,29 +87,15 @@ button:disabled {
   background-color: rgb(18, 65, 92);
 }
 
-/* Visualize button styles */
-.visualize-btn {
-  background-color: rgb(40, 162, 233);
+/* Visualise button styles */
+.visualise-btn {
+  background-color: #ed1e79;
   border-radius: 15px;
   padding-left: 50px;
   padding-right: 50px;
 }
 
-.visualize-btn:hover {
-  background-color: rgb(77, 175, 231);
+.visualise-btn:hover {
+  background-color: #ff00a0;
   color: white;
-}
-
-/* Animation Delay button styles */
-.fast-btn {
-  background-color: green;
-  border-radius: 15px;
-}
-.average-btn {
-  background-color: rgb(175, 175, 55);
-  border-radius: 15px;
-}
-.slow-btn {
-  background-color: rgb(194, 63, 63);
-  border-radius: 15px;
 }

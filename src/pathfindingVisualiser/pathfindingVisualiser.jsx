@@ -13,8 +13,8 @@ import * as recursiveDiv from "./mazeGeneratingAlgorithms/recursiveDivision";
 import Node from "./Node/node";
 
 // Define grid constants
-const rowLen = 29; //29
-const colLen = 59; //59
+const rowLen = 29;
+const colLen = 59;
 
 // Define Animation Delay constants
 const ANIMATION_FAST = 10;
@@ -22,15 +22,15 @@ const ANIMATION_AVG = 20;
 const ANIMATION_SLOW = 30
 ;
 // Define start/end node starting positions
-let startRow = 15; // 15
+let startRow = 15;
 let startCol = 15;
 let endRow = 15;
 let endCol = 45;
 
 // Define algorithm constants
 const DIJKSTRAS = "Dijkstra's";
-const Depth_First_Search = "Depth First Search";
-const Breadth_First_Search = "Breadth First Search";
+const Depth_First_Search = "DFS";
+const Breadth_First_Search = "BFS";
 const ASTAR = "A* Search";
 
 
@@ -40,15 +40,15 @@ export default class PathfindingVisualiser extends Component {
         this.state = {
           grid: [], // Two-Dimensional array representing a graph.
           mouseIsPressed: false, // Boolean which indicates the state of whether the mouse has been pressed.
-          iskeyboardDisabled: false, // Boolean to check whether pressing buttons is disabled.
           isMouseDisabled: false, // Boolean which checks whether mouse action is disabled.
+          iskeyboardDisabled: false, // Boolean to check whether pressing buttons is disabled.
           moveStart: false, // Boolean to indicate moving start node.
           moveFinish: false,  // Boolean to indicate moving end node.
-          finishAnimations: false,  // Boolean to indicate visualisations have completed
-          algorithm: "",  // String of the currently selected algorithm
-          visualiseBtnText: "Visualise", // Used to dynamically change the text of the visualisation button for the selected algorithm
-          isInstantAnims: false,  // Boolean to indicate instant animations (When adding walls and moving end/start node after visualisations are complete)
-          animationDelay: ANIMATION_FAST, // Animation delay between css visualisation animations
+          algorithm: "",  // String of the currently selected algorithm.
+          visualiseBtnText: "Visualise", // Used to dynamically alter the text of the visualisation button for the selected algorithm.
+          instantAnimations: false,  // Boolean to indicate instant animations.
+          finishAnimations: false,  // Boolean to indicate visualisations are complete
+          animationDelay: ANIMATION_FAST, // Animation delay
         };
         
         //Keybinds
@@ -75,7 +75,7 @@ export default class PathfindingVisualiser extends Component {
         // Bind other functions
         this.clearBoard = this.clearBoard.bind(this);
         this.clearNodeClasses = this.clearNodeClasses.bind(this);
-        this.cycleSpeed = this.cycleSpeed.bind(this);
+        this.animationSpeed = this.animationSpeed.bind(this);
     }
 
     componentDidMount() {
@@ -167,7 +167,7 @@ export default class PathfindingVisualiser extends Component {
         this.setState({
         grid: newGrid, //Grid state is set to a new empty grid
         finishAnimations: false,
-        isInstantAnims: false,
+        instantAnimations: false,
         });
     }
 
@@ -221,7 +221,7 @@ export default class PathfindingVisualiser extends Component {
                 newGrid[i][j].gcost = Infinity;
                 newGrid[i][j].heuristicCost = Infinity;
                 //Reset animation classes in entire grid
-                if (!this.state.isInstantAnims) {
+                if (!this.state.instantAnimations) {
                 gridElem.children[i].children[j].classList.remove(
                     "node-visited-animate"
                 );
@@ -297,7 +297,7 @@ export default class PathfindingVisualiser extends Component {
         const animations = false;
         // Run dijkstra's with temp grid, no animations, start node, and ending node
         dijkstra.dijkstraAlgorithm(newGrid, animations, startNode, endNode);
-        this.setState({ isInstantAnims: true });
+        this.setState({ instantAnimations: true });
         return newGrid;
     }
 
@@ -368,7 +368,7 @@ export default class PathfindingVisualiser extends Component {
                 node = node.previousNode;
             }
         }
-        this.setState({ isInstantAnims: true });
+        this.setState({ instantAnimations: true });
         return newGrid;
     }
 
@@ -427,7 +427,7 @@ export default class PathfindingVisualiser extends Component {
         const animations = false;
         // Run dijkstra's with temp grid, no animations, start node, and ending node
         breadthFirstSearch.breadthFirstSearchAlgorithm(newGrid, animations, startNode, endNode);
-        this.setState({ isInstantAnims: true });
+        this.setState({ instantAnimations: true });
         return newGrid;
     }
 
@@ -487,7 +487,7 @@ export default class PathfindingVisualiser extends Component {
         const animations = false;
         // Run dijkstra's with temp grid, no animations, start node, and ending node
         astar.aStarAlgorithm(newGrid, animations, startNode, endNode);
-        this.setState({ isInstantAnims: true });
+        this.setState({ instantAnimations: true });
         return newGrid;
     }
 
@@ -598,22 +598,25 @@ export default class PathfindingVisualiser extends Component {
             break;
         }
     }
-    // Handles cycling animation delay button click
-    cycleSpeed() {
+    
+    // Handles cycling animation delay on button click.
+    animationSpeed() {
         if (this.state.animationDelay === ANIMATION_FAST) {
         this.setState({ animationDelay: ANIMATION_AVG });
-        } else if (this.state.animationDelay === ANIMATION_AVG) {
+        } 
+        else if (this.state.animationDelay === ANIMATION_AVG) {
         this.setState({ animationDelay: ANIMATION_SLOW });
-        } else {
+        } 
+        else {
         this.setState({ animationDelay: ANIMATION_FAST });
         }
     }
 
     //Start of rendering
     render() {
-        // Grab current state of grid
+        // Grab current state of the grid
         const { grid } = this.state;
-        // Determine animation delay class
+        // Determine animation speed class
         const speedBtnClass =
           this.state.animationDelay === ANIMATION_FAST
             ? "fast-btn"
@@ -623,7 +626,19 @@ export default class PathfindingVisualiser extends Component {
         return (
           <div className="pathfindingCanvas">
             <div className="navBar">
-              <p>Pathfinding Visualiser</p>
+                <button
+                    className="visualise-btn"
+                    onClick={() => {
+                    if (this.state.algorithm !== "") {
+                        this.visualise(this.state.algorithm);
+                    } else {
+                        this.setState({ visualiseBtnText: "Select an Algorithm" });
+                    }
+                    }}
+                    disabled={this.state.iskeyboardDisabled}
+                >
+                    {this.state.visualiseBtnText}
+                </button>
               <div className="dropdown">
                 <p>Pathfinding Algorithms</p>
                 <div className="dropdown-content">
@@ -635,7 +650,7 @@ export default class PathfindingVisualiser extends Component {
                         algorithm: DIJKSTRAS,
                         visualiseBtnText: "Visualise " + DIJKSTRAS,
                         finishAnimations: false,
-                        isInstantAnims: false,
+                        instantAnimations: false,
                       });
                     }}
                     disabled={this.state.iskeyboardDisabled}
@@ -650,12 +665,12 @@ export default class PathfindingVisualiser extends Component {
                         algorithm: ASTAR,
                         visualiseBtnText: "Visualise " + ASTAR,
                         finishAnimations: false,
-                        isInstantAnims: false,
+                        instantAnimations: false,
                       });
                     }}
                     disabled={this.state.iskeyboardDisabled}
                   >
-                    A* Search (Euclidean)
+                    A* Algorithm
                   </button>
                   <button
                     className="dropdown-btn"
@@ -665,12 +680,12 @@ export default class PathfindingVisualiser extends Component {
                         algorithm: Depth_First_Search,
                         visualiseBtnText: "Visualise " + Depth_First_Search,
                         finishAnimations: false,
-                        isInstantAnims: false,
+                        instantAnimations: false,
                       });
                     }}
                     disabled={this.state.iskeyboardDisabled}
                   >
-                    Depth-first Algorithm
+                    Depth-First-Search
                   </button>
                   <button
                     className="dropdown-btn"
@@ -680,17 +695,17 @@ export default class PathfindingVisualiser extends Component {
                         algorithm: Breadth_First_Search,
                         visualiseBtnText: "Visualise " + Breadth_First_Search,
                         finishAnimations: false,
-                        isInstantAnims: false,
+                        instantAnimations: false,
                       });
                     }}
                     disabled={this.state.iskeyboardDisabled}
                   >
-                    Breath-first Algorithm
+                    Breadth-First-Search
                   </button>
                 </div>
               </div>
               <div className="dropdown">
-                <p>Maze Algorithms</p>
+                <p>Maze Generation</p>
                 <div className="dropdown-content">
                   <button
                     className="dropdown-btn"
@@ -722,28 +737,15 @@ export default class PathfindingVisualiser extends Component {
                 </div>
               </div>
               <button
-                className="visualise-btn"
-                onClick={() => {
-                  if (this.state.algorithm !== "") {
-                    this.visualise(this.state.algorithm);
-                  } else {
-                    this.setState({ visualiseBtnText: "Select an Algorithm" });
-                  }
-                }}
-                disabled={this.state.iskeyboardDisabled}
-              >
-                {this.state.visualiseBtnText}
-              </button>
-              <button
                 onClick={() => this.clearBoard()}
                 disabled={this.state.iskeyboardDisabled}
               >
-                Clear Board
+                Reset Board
               </button>
               <button
                 onClick={() => {
                   this.clearNodeClasses();
-                  this.setState({ finishAnimations: false, isInstantAnims: false });
+                  this.setState({ finishAnimations: false, instantAnimations: false });
                 }}
                 disabled={this.state.iskeyboardDisabled}
               >
@@ -751,11 +753,12 @@ export default class PathfindingVisualiser extends Component {
               </button>
               <button
                 className={speedBtnClass}
-                onClick={() => this.cycleSpeed()}
+                onClick={() => this.animationSpeed()}
                 disabled={this.state.iskeyboardDisabled}
               >
-                Animation Delay: {this.state.animationDelay} ms
+                Animation Speed: {this.state.animationDelay} ms
               </button>
+              <p>Pathfinding Visualiser</p>
             </div>
             {/* <Header /> */}
             <div className="grid">
@@ -806,7 +809,7 @@ export default class PathfindingVisualiser extends Component {
     //End of rendering  
     
 
-// Creates initial grid filled with nodes
+// Creates the initial grid filled with nodes using a two dimensional array
 const createGrid = () => {
     const grid = [];
     for (let row = 0; row < rowLen; row++) {
@@ -818,7 +821,7 @@ const createGrid = () => {
     }
     return grid;
   };
-  
+
   // Creates blank node
   const createNode = (col, row) => {
     return {
