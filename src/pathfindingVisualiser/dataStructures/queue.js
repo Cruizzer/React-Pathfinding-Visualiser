@@ -1,4 +1,4 @@
-// General queue helper class
+// General queue
 export default class Queue {
     constructor() {
       this.arr = [];

@@ -1,12 +1,12 @@
-// Import react
+// Import React
 import React, { Component } from "react";
 // Import stylesheets
 import "./pathfindingVisualiser.css";
 // Import algorithms
 import * as dijkstra from "./pathfindingAlgorithms/dijkstra";
 import * as astar from "./pathfindingAlgorithms/astar";
-import * as dfs from "./pathfindingAlgorithms/dfs"
-import * as bfs from "./pathfindingAlgorithms/bfs"
+import * as depthFirstSearch from "./pathfindingAlgorithms/depthFirstSearch"
+import * as breadthFirstSearch from "./pathfindingAlgorithms/breadthFirstSearch"
 import * as recursiveDiv from "./mazeGeneratingAlgorithms/recursiveDivision";
 
 // Import Node
@@ -22,15 +22,15 @@ const ANIMATION_AVG = 20;
 const ANIMATION_SLOW = 30
 ;
 // Define start/end node starting positions
-let startRow = 14; // 15
-let startCol = 14;
-let endRow = 14;
+let startRow = 15; // 15
+let startCol = 15;
+let endRow = 15;
 let endCol = 45;
 
 // Define algorithm constants
 const DIJKSTRAS = "Dijkstra's";
-const DFS = "DFS";
-const BFS = "BFS";
+const Depth_First_Search = "Depth First Search";
+const Breadth_First_Search = "Breadth First Search";
 const ASTAR = "A* Search";
 
 
@@ -38,17 +38,17 @@ export default class PathfindingVisualiser extends Component {
     constructor(props) {
         super(props);
         this.state = {
-          grid: [], // 2 Dimensional array representing graph
-          mouseIsPressed: false, // Boolean which indicates state of mouse press
-          isButtonDisabled: false, // Boolean to check whether pressing buttons is disabled
-          isMouseDisabled: false, // Boolean which checks whether mouse action is disabled
-          moveStart: false, // Boolean to indicate moving start node
-          moveFinish: false,  // Boolean to indicate moving end node
-          finishAnimations: false,  // Boolean to indicate visualizations have completed
+          grid: [], // Two-Dimensional array representing a graph.
+          mouseIsPressed: false, // Boolean which indicates the state of whether the mouse has been pressed.
+          iskeyboardDisabled: false, // Boolean to check whether pressing buttons is disabled.
+          isMouseDisabled: false, // Boolean which checks whether mouse action is disabled.
+          moveStart: false, // Boolean to indicate moving start node.
+          moveFinish: false,  // Boolean to indicate moving end node.
+          finishAnimations: false,  // Boolean to indicate visualisations have completed
           algorithm: "",  // String of the currently selected algorithm
-          visualizeBtnText: "Visualize", // Used to dynamically change the text of the visualization button for the selected algorithm
-          isInstantAnims: false,  // Boolean to indicate instant animations (When adding walls and moving end/start node after visualizations are complete)
-          animationDelay: ANIMATION_FAST, // Animation delay between css visualization animations
+          visualiseBtnText: "Visualise", // Used to dynamically change the text of the visualisation button for the selected algorithm
+          isInstantAnims: false,  // Boolean to indicate instant animations (When adding walls and moving end/start node after visualisations are complete)
+          animationDelay: ANIMATION_FAST, // Animation delay between css visualisation animations
         };
         
         //Keybinds
@@ -66,10 +66,10 @@ export default class PathfindingVisualiser extends Component {
         this.dijkstraNoAnim = this.dijkstraNoAnim.bind(this);
         this.aStarAnimations = this.aStarAnimations.bind(this);
         this.aStarNoAnim = this.aStarNoAnim.bind(this);
-        this.bfsAnimations = this.bfsAnimations.bind(this);
-        this.bfsNoAnim = this.bfsNoAnim.bind(this);
-        this.dfsAnimations = this.dfsAnimations.bind(this);
-        this.dfsNoAnim = this.dfsNoAnim.bind(this);
+        this.breadthFirstSearchAnimations = this.breadthFirstSearchAnimations.bind(this);
+        this.breadthFirstSearchNoAnim = this.breadthFirstSearchNoAnim.bind(this);
+        this.depthFirstSearchAnimations = this.depthFirstSearchAnimations.bind(this);
+        this.depthFirstSearchNoAnim = this.depthFirstSearchNoAnim.bind(this);
         this.recursiveDivisionAnimation = this.recursiveDivisionAnimation.bind(this);
 
         // Bind other functions
@@ -79,7 +79,7 @@ export default class PathfindingVisualiser extends Component {
     }
 
     componentDidMount() {
-        // Instantiates grid and set to state
+        // Instantiates grid and sets the grid to the state
         const grid = createGrid();
         this.setState({ grid });
     } 
@@ -90,13 +90,16 @@ export default class PathfindingVisualiser extends Component {
         // Moving start/finish | toggle wall
         if (isStart) {
             this.setState({ moveStart: true });
-        } else if (isFinish) {
+        }
+        else if (isFinish) {
             this.setState({ moveFinish: true });
-        } else {
+        }
+        else {
             let newGrid = this.toggleWall(this.state.grid, row, col);
+
             // Reanimate instantly when wall is added after animations are finished
             if (this.state.finishAnimations) {
-            newGrid = this.visualizeNoAnim(this.state.algorithm, newGrid);
+            newGrid = this.visualiseNoAnim(this.state.algorithm, newGrid);
             }
             this.setState({ grid: newGrid });
         }
@@ -111,17 +114,19 @@ export default class PathfindingVisualiser extends Component {
         if (this.state.moveStart) {
             newGrid = this.toggleStart(this.state.grid, row, col);
             if (this.state.finishAnimations) {
-            newGrid = this.visualizeNoAnim(this.state.algorithm, newGrid);
+            newGrid = this.visualiseNoAnim(this.state.algorithm, newGrid);
             }
-        } else if (this.state.moveFinish) {
+        } 
+        else if (this.state.moveFinish) {
             newGrid = this.toggleFinish(this.state.grid, row, col);
             if (this.state.finishAnimations) {
-            newGrid = this.visualizeNoAnim(this.state.algorithm, newGrid);
+            newGrid = this.visualiseNoAnim(this.state.algorithm, newGrid);
             }
-        } else {
+        } 
+        else {
             newGrid = this.toggleWall(this.state.grid, row, col);
             if (this.state.finishAnimations) {
-            newGrid = this.visualizeNoAnim(this.state.algorithm, newGrid);
+            newGrid = this.visualiseNoAnim(this.state.algorithm, newGrid);
             }
         }
         this.setState({ grid: newGrid });
@@ -165,34 +170,37 @@ export default class PathfindingVisualiser extends Component {
         isInstantAnims: false,
         });
     }
+
     // Reset grid (Includes Node [all] classes and properties)
     clearNodeClasses() {
         // Select grid element
         const gridElem = document.getElementsByClassName("grid")[0];
+
         // Clear grid by creating initial grid
         const newGrid = this.state.grid.slice();
+
         // Remove all animation/nonanimation classes and reset all node properties
         for (let i = 0; i < newGrid.length; i++) {
-        for (let j = 0; j < newGrid[i].length; j++) {
-            gridElem.children[i].children[j].classList.remove(
-            "node-visited-animate"
-            );
-            gridElem.children[i].children[j].classList.remove(
-            "node-shortest-path-animate"
-            );
-            gridElem.children[i].children[j].classList.remove("node-wall-animate");
-            gridElem.children[i].children[j].classList.remove("node-visited");
-            gridElem.children[i].children[j].classList.remove("node-shortest-path");
-            newGrid[i][j].dist = Infinity;
-            newGrid[i][j].isVisited = false;
-            newGrid[i][j].previousNode = null;
-            newGrid[i][j].isInPQ = false;
-            newGrid[i][j].isAnimated = false;
-            newGrid[i][j].isShortestPath = false;
-            newGrid[i][j].fcost = Infinity;
-            newGrid[i][j].gcost = Infinity;
-            newGrid[i][j].hcost = Infinity;
-        }
+            for (let j = 0; j < newGrid[i].length; j++) {
+                gridElem.children[i].children[j].classList.remove(
+                "node-visited-animate"
+                );
+                gridElem.children[i].children[j].classList.remove(
+                "node-shortest-path-animate"
+                );
+                gridElem.children[i].children[j].classList.remove("node-wall-animate");
+                gridElem.children[i].children[j].classList.remove("node-visited");
+                gridElem.children[i].children[j].classList.remove("node-shortest-path");
+                newGrid[i][j].dist = Infinity;
+                newGrid[i][j].isVisited = false;
+                newGrid[i][j].previousNode = null;
+                newGrid[i][j].isInPQ = false;
+                newGrid[i][j].isAnimated = false;
+                newGrid[i][j].isShortestPath = false;
+                newGrid[i][j].fcost = Infinity;
+                newGrid[i][j].gcost = Infinity;
+                newGrid[i][j].heuristicCost = Infinity;
+            }
         }
         this.setState({ grid: newGrid });
     }
@@ -211,7 +219,7 @@ export default class PathfindingVisualiser extends Component {
                 newGrid[i][j].isAnimated = false;
                 newGrid[i][j].fcost = Infinity;
                 newGrid[i][j].gcost = Infinity;
-                newGrid[i][j].hcost = Infinity;
+                newGrid[i][j].heuristicCost = Infinity;
                 //Reset animation classes in entire grid
                 if (!this.state.isInstantAnims) {
                 gridElem.children[i].children[j].classList.remove(
@@ -231,7 +239,7 @@ export default class PathfindingVisualiser extends Component {
     // Dijkstra's algorithm (With animations)
     dijkstraAnimations() {
         // Disable mouse and buttons
-        this.setState({ isButtonDisabled: true });
+        this.setState({ iskeyboardDisabled: true });
         this.setState({ isMouseDisabled: true });
         this.setState({ finishAnimations: true });
         this.setState({ mouseIsPressed: false });
@@ -273,9 +281,9 @@ export default class PathfindingVisualiser extends Component {
             );
         }, (visitedOrder.length + j) * this.state.animationDelay);
         }
-        // Reenable mouse and buttons after animations are finished
+        // Re-enable mouse and keyboard after animations are finished
         setTimeout(() => {
-        this.setState({ isButtonDisabled: false, isMouseDisabled: false });
+        this.setState({ iskeyboardDisabled: false, isMouseDisabled: false });
         }, (visitedOrder.length + nodesInShortestPathOrder.length + 1) * this.state.animationDelay);
         // Set new grid
         this.setState({ grid: newGrid });
@@ -293,10 +301,10 @@ export default class PathfindingVisualiser extends Component {
         return newGrid;
     }
 
-    // DFS Algorithm (With animations)
-    dfsAnimations() {
+    // Depth_First_Search Algorithm (With animations)
+    depthFirstSearchAnimations() {
         // Disable mouse and buttons
-        this.setState({ isButtonDisabled: true });
+        this.setState({ iskeyboardDisabled: true });
         this.setState({ isMouseDisabled: true });
         this.setState({ finishAnimations: true });
         this.setState({ mouseIsPressed: false });
@@ -307,7 +315,7 @@ export default class PathfindingVisualiser extends Component {
         const startNode = newGrid[startRow][startCol];
         const endNode = newGrid[endRow][endCol];
         const animations = true;
-        const visitedOrder = dfs.dfsAlgorithm(
+        const visitedOrder = depthFirstSearch.depthFirstSearchAlgorithm(
         newGrid,
         animations,
         startNode,
@@ -337,20 +345,20 @@ export default class PathfindingVisualiser extends Component {
                 pathLength++;
             }
         }
-        // Reenable mouse and buttons after animations are finished
+        // Re-enable mouse and keyboard after animations are finished
         setTimeout(() => {
-        this.setState({ isButtonDisabled: false, isMouseDisabled: false });
+        this.setState({ iskeyboardDisabled: false, isMouseDisabled: false });
         }, (visitedOrder.length + pathLength + 1) * this.state.animationDelay);
         this.setState({ grid: newGrid });
     }
-    // DFS Algorithm (No animations)
-    dfsNoAnim(newGrid) {
+    // Depth_First_Search Algorithm (No animations)
+    depthFirstSearchNoAnim(newGrid) {
         this.clearAnimations(newGrid);
         const startNode = newGrid[startRow][startCol];
         const endNode = newGrid[endRow][endCol];
         const animations = false;
         // Run dijkstra's with temp grid, no animations, start node, and ending node
-        dfs.dfsAlgorithm(newGrid, animations, startNode, endNode);
+        depthFirstSearch.depthFirstSearchAlgorithm(newGrid, animations, startNode, endNode);
         // Draw shortest path
         if (endNode.isVisited) {
             let node = startNode;
@@ -364,10 +372,10 @@ export default class PathfindingVisualiser extends Component {
         return newGrid;
     }
 
-    // BFS Algorithm (With animations)
-    bfsAnimations() {
+    // BFS Algorithm (Animations method)
+    breadthFirstSearchAnimations() {
         // Disable mouse and buttons
-        this.setState({ isButtonDisabled: true });
+        this.setState({ iskeyboardDisabled: true });
         this.setState({ isMouseDisabled: true });
         this.setState({ finishAnimations: true });
         this.setState({ mouseIsPressed: false });
@@ -378,7 +386,7 @@ export default class PathfindingVisualiser extends Component {
         const startNode = newGrid[startRow][startCol];
         const endNode = newGrid[endRow][endCol];
         const animations = true;
-        const [visitedOrder, nodesInShortestPathOrder] = bfs.bfsAlgorithm(
+        const [visitedOrder, nodesInShortestPathOrder] = breadthFirstSearch.breadthFirstSearchAlgorithm(
         newGrid,
         animations,
         startNode,
@@ -394,6 +402,7 @@ export default class PathfindingVisualiser extends Component {
                 );
             }, i * this.state.animationDelay);
         }
+        
         // Animations for shortest path
         for (let j = 0; j < nodesInShortestPathOrder.length; j++) {
             const { row, col } = nodesInShortestPathOrder[j];
@@ -403,34 +412,36 @@ export default class PathfindingVisualiser extends Component {
                 );
             }, (visitedOrder.length + j) * this.state.animationDelay);
         }
-        // Reenable mouse and buttons after animations are finished
+        // Re-enable mouse and keyboard after animations are finished
         setTimeout(() => {
-        this.setState({ isButtonDisabled: false, isMouseDisabled: false });
+        this.setState({ iskeyboardDisabled: false, isMouseDisabled: false });
         }, (visitedOrder.length + nodesInShortestPathOrder.length + 1) * this.state.animationDelay);
         this.setState({ grid: newGrid });
     }
 
-    // DFS Algorithm (No animations)
-    bfsNoAnim(newGrid) {
+    // Depth_First_Search Algorithm (No animations)
+    breadthFirstSearchNoAnim(newGrid) {
         this.clearAnimations(newGrid);
         const startNode = newGrid[startRow][startCol];
         const endNode = newGrid[endRow][endCol];
         const animations = false;
         // Run dijkstra's with temp grid, no animations, start node, and ending node
-        bfs.bfsAlgorithm(newGrid, animations, startNode, endNode);
+        breadthFirstSearch.breadthFirstSearchAlgorithm(newGrid, animations, startNode, endNode);
         this.setState({ isInstantAnims: true });
         return newGrid;
     }
 
-    // A* Algorthim (With animations)
+    // A* Algorithm (Animations method)
     aStarAnimations() {
         // Disable mouse and buttons
-        this.setState({ isButtonDisabled: true });
+        this.setState({ iskeyboardDisabled: true });
         this.setState({ isMouseDisabled: true });
         this.setState({ finishAnimations: true });
         this.setState({ mouseIsPressed: false });
+
         // Clear node [all] classes and properties
         this.clearNodeClasses();
+
         // Graph, node, and arrays from dijkstra's algorithm for animation
         const newGrid = this.state.grid.slice();
         const startNode = newGrid[startRow][startCol];
@@ -460,9 +471,9 @@ export default class PathfindingVisualiser extends Component {
                 );
             }, (visitedOrder.length + j) * this.state.animationDelay);
         }
-        // Reenable mouse and buttons after animations are finished
+        // Re-enable mouse and keyboard after animations are finished
         setTimeout(() => {
-        this.setState({ isButtonDisabled: false, isMouseDisabled: false });
+        this.setState({ iskeyboardDisabled: false, isMouseDisabled: false });
         }, (visitedOrder.length + nodesInShortestPathOrder.length + 1) * this.state.animationDelay);
         // Set new grid
         this.setState({ grid: newGrid });
@@ -483,7 +494,7 @@ export default class PathfindingVisualiser extends Component {
     // Recursive Division Algorithm (Wall algorithm)
     recursiveDivisionAnimation(mode) {
         // Disable mouse and buttons
-        this.setState({ isButtonDisabled: true });
+        this.setState({ iskeyboardDisabled: true });
         this.setState({ isMouseDisabled: true });
         this.setState({ mouseIsPressed: false });
         // Clear node classes
@@ -514,9 +525,9 @@ export default class PathfindingVisualiser extends Component {
         }, i * this.state.animationDelay);
         }
         console.log(newGrid[0][1]);
-        // Reenable mouse and buttons after animations are finished
+        // Re-enable mouse and keyboard after animations are finished
         setTimeout(() => {
-        this.setState({ isButtonDisabled: false, isMouseDisabled: false });
+        this.setState({ iskeyboardDisabled: false, isMouseDisabled: false });
         this.clearNodeClasses();
         }, wallVisitedOrder.length * this.state.animationDelay + 500);
         this.setState({ grid: newGrid });
@@ -553,8 +564,8 @@ export default class PathfindingVisualiser extends Component {
         return newGrid;
     };
 
-    // Handles visualization button click with animations
-    visualize(algorithm) {
+    // Handles visualisation button click with animations
+    visualise(algorithm) {
         switch (algorithm) {
         case DIJKSTRAS:
             this.dijkstraAnimations();
@@ -562,27 +573,27 @@ export default class PathfindingVisualiser extends Component {
         case ASTAR:
             this.aStarAnimations();
             break;
-        case DFS:
-            this.dfsAnimations();
+        case Depth_First_Search:
+            this.depthFirstSearchAnimations();
             break;
-        case BFS:
-            this.bfsAnimations();
+        case Breadth_First_Search:
+            this.breadthFirstSearchAnimations();
             break;
         default:
             break;
         }
     }
-    // Handles visualization with wall addition and start/end node moving (No animations)
-    visualizeNoAnim(algorithm, newGrid) {
+    // Handles visualisation with wall addition and start/end node moving (No animations)
+    visualiseNoAnim(algorithm, newGrid) {
         switch (algorithm) {
         case DIJKSTRAS:
             return this.dijkstraNoAnim(newGrid);
         case ASTAR:
             return this.aStarNoAnim(newGrid);
-        case DFS:
-            return this.dfsNoAnim(newGrid);
-        case BFS:
-            return this.bfsNoAnim(newGrid);
+        case Depth_First_Search:
+            return this.depthFirstSearchNoAnim(newGrid);
+        case Breadth_First_Search:
+            return this.breadthFirstSearchNoAnim(newGrid);
         default:
             break;
         }
@@ -612,7 +623,7 @@ export default class PathfindingVisualiser extends Component {
         return (
           <div className="pathfindingCanvas">
             <div className="navBar">
-              <p>Pathfinding Visualizer</p>
+              <p>Pathfinding Visualiser</p>
               <div className="dropdown">
                 <p>Pathfinding Algorithms</p>
                 <div className="dropdown-content">
@@ -622,12 +633,12 @@ export default class PathfindingVisualiser extends Component {
                       this.clearNodeClasses();
                       this.setState({
                         algorithm: DIJKSTRAS,
-                        visualizeBtnText: "Visualize " + DIJKSTRAS,
+                        visualiseBtnText: "Visualise " + DIJKSTRAS,
                         finishAnimations: false,
                         isInstantAnims: false,
                       });
                     }}
-                    disabled={this.state.isButtonDisabled}
+                    disabled={this.state.iskeyboardDisabled}
                   >
                     Dijkstra's Algorithm
                   </button>
@@ -637,12 +648,12 @@ export default class PathfindingVisualiser extends Component {
                       this.clearNodeClasses();
                       this.setState({
                         algorithm: ASTAR,
-                        visualizeBtnText: "Visualize " + ASTAR,
+                        visualiseBtnText: "Visualise " + ASTAR,
                         finishAnimations: false,
                         isInstantAnims: false,
                       });
                     }}
-                    disabled={this.state.isButtonDisabled}
+                    disabled={this.state.iskeyboardDisabled}
                   >
                     A* Search (Euclidean)
                   </button>
@@ -651,13 +662,13 @@ export default class PathfindingVisualiser extends Component {
                     onClick={() => {
                       this.clearNodeClasses();
                       this.setState({
-                        algorithm: DFS,
-                        visualizeBtnText: "Visualize " + DFS,
+                        algorithm: Depth_First_Search,
+                        visualiseBtnText: "Visualise " + Depth_First_Search,
                         finishAnimations: false,
                         isInstantAnims: false,
                       });
                     }}
-                    disabled={this.state.isButtonDisabled}
+                    disabled={this.state.iskeyboardDisabled}
                   >
                     Depth-first Algorithm
                   </button>
@@ -666,13 +677,13 @@ export default class PathfindingVisualiser extends Component {
                     onClick={() => {
                       this.clearNodeClasses();
                       this.setState({
-                        algorithm: BFS,
-                        visualizeBtnText: "Visualize " + BFS,
+                        algorithm: Breadth_First_Search,
+                        visualiseBtnText: "Visualise " + Breadth_First_Search,
                         finishAnimations: false,
                         isInstantAnims: false,
                       });
                     }}
-                    disabled={this.state.isButtonDisabled}
+                    disabled={this.state.iskeyboardDisabled}
                   >
                     Breath-first Algorithm
                   </button>
@@ -686,7 +697,7 @@ export default class PathfindingVisualiser extends Component {
                     onClick={() => {
                       this.recursiveDivisionAnimation("deterministic");
                     }}
-                    disabled={this.state.isButtonDisabled}
+                    disabled={this.state.iskeyboardDisabled}
                   >
                     Recursive Divison
                   </button>
@@ -695,7 +706,7 @@ export default class PathfindingVisualiser extends Component {
                     onClick={() => {
                       this.recursiveDivisionAnimation("horizontal");
                     }}
-                    disabled={this.state.isButtonDisabled}
+                    disabled={this.state.iskeyboardDisabled}
                   >
                     Recursive Divison (Horizontal-skew)
                   </button>
@@ -704,28 +715,28 @@ export default class PathfindingVisualiser extends Component {
                     onClick={() => {
                       this.recursiveDivisionAnimation("vertical");
                     }}
-                    disabled={this.state.isButtonDisabled}
+                    disabled={this.state.iskeyboardDisabled}
                   >
                     Recursive Divison (Vertical-skew)
                   </button>
                 </div>
               </div>
               <button
-                className="visualize-btn"
+                className="visualise-btn"
                 onClick={() => {
                   if (this.state.algorithm !== "") {
-                    this.visualize(this.state.algorithm);
+                    this.visualise(this.state.algorithm);
                   } else {
-                    this.setState({ visualizeBtnText: "Select an Algorithm" });
+                    this.setState({ visualiseBtnText: "Select an Algorithm" });
                   }
                 }}
-                disabled={this.state.isButtonDisabled}
+                disabled={this.state.iskeyboardDisabled}
               >
-                {this.state.visualizeBtnText}
+                {this.state.visualiseBtnText}
               </button>
               <button
                 onClick={() => this.clearBoard()}
-                disabled={this.state.isButtonDisabled}
+                disabled={this.state.iskeyboardDisabled}
               >
                 Clear Board
               </button>
@@ -734,14 +745,14 @@ export default class PathfindingVisualiser extends Component {
                   this.clearNodeClasses();
                   this.setState({ finishAnimations: false, isInstantAnims: false });
                 }}
-                disabled={this.state.isButtonDisabled}
+                disabled={this.state.iskeyboardDisabled}
               >
                 Reset Animations
               </button>
               <button
                 className={speedBtnClass}
                 onClick={() => this.cycleSpeed()}
-                disabled={this.state.isButtonDisabled}
+                disabled={this.state.iskeyboardDisabled}
               >
                 Animation Delay: {this.state.animationDelay} ms
               </button>
@@ -807,6 +818,7 @@ const createGrid = () => {
     }
     return grid;
   };
+  
   // Creates blank node
   const createNode = (col, row) => {
     return {
@@ -814,19 +826,22 @@ const createGrid = () => {
       row,
       isStart: row === startRow && col === startCol,
       isFinish: row === endRow && col === endCol,
+
       // General pathfinding variables
       dist: Infinity,
-      isVisited: false,
       previousNode: null,
-      // Class Toggles
+      isVisited: false,
+
       isWall: false,
-      isShortestPath: false,
       isAnimated: false,
+      isShortestPath: false,
+
+
       // A Star* Variables
       fcost: Infinity,
-      hcost: Infinity,
       gcost: Infinity,
-      // Union-find Variables
+      heuristicCost: Infinity,
+      
       parent: null,
       rank: 0,
     };
@@ -842,7 +857,7 @@ const createGrid = () => {
   https://onlinetexttools.com/replace-text
   
 
-For DFS, talk about iterative stack implementation vs recursive implementation
+For Depth_First_Search, talk about iterative stack implementation vs recursive implementation
 
 
 
