@@ -9,3 +9,5 @@ function App() {
 }
 
 export default App;
+
+/* PathfindingVisualiser is a React class component being rendered at function App which is rendered at the root*/

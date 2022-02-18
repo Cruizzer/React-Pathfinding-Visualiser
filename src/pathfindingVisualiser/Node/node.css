@@ -4,20 +4,17 @@
     background-color: rgb(243, 243, 243);
     padding: 1px;
     border: 1px solid rgb(175, 216, 248);
-    /*border: 1px solid 	#133e7c;*/
     width: calc(98vw / 50);
     height: calc(79vh / 28);
   }
   .node-finish {
     border: 1px solid lightcoral;
     background-color: lightcoral;
-    /*background-image: url("../media//finish-flag.svg");*/
     background-position: center;
     background-size: contain;
     background-repeat: no-repeat;
   }
   .node-start {
-    /*background-image: url("../media//start-flag.svg");*/
     background-color: lightgreen;
     border: 1px solid lightgreen;
     background-position: center;

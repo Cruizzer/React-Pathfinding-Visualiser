@@ -740,7 +740,6 @@ export default class PathfindingVisualiser extends Component {
               </button>
               <p>Pathfinding Visualiser</p>
             </div>
-            {/* <Header /> */}
             <div className="grid">
               {grid.map((row, rowIdx) => {
                 return (
@@ -781,7 +780,6 @@ export default class PathfindingVisualiser extends Component {
                 );
               })}
             </div>
-            {/* <Footer /> */}
           </div>
         );
       }
@@ -832,23 +830,9 @@ const createGrid = () => {
   
 
   /*
-  Additional features
+  Additional potential features
   Add counter to show how many nodes traversed and in how much time or timer
   Use file handling to load in previous mazes
   Mention time complexity (?)
   Add tables 
-  https://onlinetexttools.com/replace-text
-  
-
-For Depth_First_Search, talk about iterative stack implementation vs recursive implementation
-
-
-
-  -- Done --
-  Make grid background black
-  Change css animations from github
-
-  Ask teacher what exactly is getting sent
-  
-
   */

@@ -15,7 +15,7 @@ function recursiveDivision(
   wallsVisitedOrder
 ) {
   if (maxRow - row < 1 || maxColumn - column < 1) return;
-  
+
   if (isHorizontal) {
     let pivot = randomEvenInteger(row, maxRow);
     createHorizontalWall(
@@ -109,7 +109,7 @@ function randomOddInteger(low, high) {
   if (even === high) return even - 1;
   return even + 1;
 }
-// Creates outter walls of maze, avoid start and end nodes
+// Creates outer walls of maze, avoid start and end nodes
 function createBoundaryWalls(grid, wallsVisitedOrder) {
   for (let i = 0; i < grid[0].length; i++) {
     if (!grid[0][i].isFinish && !grid[0][i].isStart) {
@@ -193,7 +193,7 @@ function createVerticalWall(
   }
 }
 
-
+/*Add comments to each subroutine and main function*/
 export function recursiveDivisionAlgorithm(grid, startNode, endNode) {
   // Initialize order of visited nodes to animate as walls
   let wallsVisitedOrder = [];

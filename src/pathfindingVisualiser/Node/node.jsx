@@ -28,7 +28,8 @@ export default class Node extends Component {
       : isStart
       ? "node-start"
       : "";
-    // Add non-animation classes based on is* toggles
+
+    // Add non-animation classes
     const visitedClass =
       isVisited && isAnimated === false ? "node-visited" : "";
     const pathClass =
