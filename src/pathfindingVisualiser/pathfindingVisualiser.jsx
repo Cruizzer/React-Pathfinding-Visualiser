@@ -834,5 +834,5 @@ const createGrid = () => {
   Add counter to show how many nodes traversed and in how much time or timer
   Use file handling to load in previous mazes
   Mention time complexity (?)
-  Add tables 
+  Add tables
   */
