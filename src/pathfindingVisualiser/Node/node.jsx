@@ -12,6 +12,8 @@ export default class Node extends Component {
     const {
       row,
       col,
+      
+      // Boolean properties for each node.
       isStart,
       isFinish,
       isWall,
@@ -22,14 +24,15 @@ export default class Node extends Component {
       isShortestPath,
       isAnimated,
     } = this.props;
-    // Add start/end node classes to appropriate nodes
+
+    // Add start/end node classes to appropriate nodes in order to allow for styling
     const extraClassName = isFinish
       ? "node-finish"
       : isStart
       ? "node-start"
       : "";
 
-    // Add non-animation classes
+    // Add non-animation classes to allow for styling the nodes
     const visitedClass =
       isVisited && isAnimated === false ? "node-visited" : "";
     const pathClass =

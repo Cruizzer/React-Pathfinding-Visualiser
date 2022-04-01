@@ -48,7 +48,7 @@ export default class PathfindingVisualiser extends Component {
           visualiseBtnText: "Visualise", // Used to dynamically alter the text of the visualisation button for the selected algorithm.
           instantAnimations: false,  // Boolean to indicate instant animations.
           finishAnimations: false,  // Boolean to indicate visualisations are complete
-          animationDelay: ANIMATION_FAST, // Animation delay
+          animationDelay: ANIMATION_FAST, // Animation delay, can be [Fast, Average, Slow]
         };
         
         // Binding mouse functions
@@ -81,9 +81,9 @@ export default class PathfindingVisualiser extends Component {
         // Instantiates grid and sets the grid to the state
         const grid = createGrid();
         this.setState({ grid });
-    } 
+    }
 
-    handleMouseDown(e, row, column, isStart, isFinish) { //Uses 'e' javascript web handler
+    handleMouseDown(e, row, column, isStart, isFinish) { // Uses javascript's 'e' current event object
         if (this.state.isMouseDisabled) return;
         e.preventDefault();
         
@@ -271,6 +271,7 @@ export default class PathfindingVisualiser extends Component {
             );
         }, i * this.state.animationDelay);
         }
+
         // Animations for shortest path
         for (let j = 0; j < nodesInShortestPathOrder.length; j++) {
         const { row, column } = nodesInShortestPathOrder[j];
@@ -280,6 +281,7 @@ export default class PathfindingVisualiser extends Component {
             );
         }, (visitedOrder.length + j) * this.state.animationDelay);
         }
+
         // Re-enable mouse and keyboard after animations are finished
         setTimeout(() => {
         this.setState({ iskeyboardDisabled: false, isMouseDisabled: false });
@@ -294,7 +296,7 @@ export default class PathfindingVisualiser extends Component {
         const startNode = newGrid[startRow][startColumn];
         const finishNode = newGrid[endRow][endColumn];
         const animations = false;
-        // Run dijkstra's with temp grid, no animations, start node, and ending node
+        // Run dijkstra's with temporary grid, no animations, start node, and ending node
         dijkstra.dijkstraAlgorithm(newGrid, animations, startNode, finishNode);
         this.setState({ instantAnimations: true });
         return newGrid;
@@ -356,7 +358,7 @@ export default class PathfindingVisualiser extends Component {
         const startNode = newGrid[startRow][startColumn];
         const finishNode = newGrid[endRow][endColumn];
         const animations = false;
-        // Run dijkstra's with temp grid, no animations, start node, and ending node
+        // Run dfs with temporary grid, no animations, start node, and ending node
         depthFirstSearch.depthFirstSearchAlgorithm(newGrid, animations, startNode, finishNode);
         // Draw shortest path
         if (finishNode.isVisited) {
@@ -391,6 +393,7 @@ export default class PathfindingVisualiser extends Component {
         startNode,
         finishNode
         );
+        
         // Animations for visiting nodes
         const gridElem = document.getElementsByClassName("grid")[0];
         for (let i = 0; i < visitedOrder.length; i++) {
@@ -402,7 +405,7 @@ export default class PathfindingVisualiser extends Component {
             }, i * this.state.animationDelay);
         }
         
-        // Animations for shortest path
+        // Iterating animations for shortest path
         for (let j = 0; j < nodesInShortestPathOrder.length; j++) {
             const { row, column } = nodesInShortestPathOrder[j];
             setTimeout(() => {
@@ -424,7 +427,7 @@ export default class PathfindingVisualiser extends Component {
         const startNode = newGrid[startRow][startColumn];
         const finishNode = newGrid[endRow][endColumn];
         const animations = false;
-        // Run dijkstra's with temp grid, no animations, start node, and ending node
+        // Run bfs with temporary grid, no animations, start node, and ending node
         breadthFirstSearch.breadthFirstSearchAlgorithm(newGrid, animations, startNode, finishNode);
         this.setState({ instantAnimations: true });
         return newGrid;
@@ -441,7 +444,6 @@ export default class PathfindingVisualiser extends Component {
         // Clear node [all] classes and properties
         this.clearNodeClasses();
 
-        // Graph, node, and arrays from dijkstra's algorithm for animation
         const newGrid = this.state.grid.slice();
         const startNode = newGrid[startRow][startColumn];
         const finishNode = newGrid[endRow][endColumn];
@@ -461,7 +463,8 @@ export default class PathfindingVisualiser extends Component {
                 );
             }, i * this.state.animationDelay);
         }
-        // Animations for shortest path
+
+        // Iterating animations for shortest path
         for (let j = 0; j < nodesInShortestPathOrder.length; j++) {
             const { row, column } = nodesInShortestPathOrder[j];
             setTimeout(() => {
@@ -470,9 +473,10 @@ export default class PathfindingVisualiser extends Component {
                 );
             }, (visitedOrder.length + j) * this.state.animationDelay);
         }
+
         // Re-enable mouse and keyboard after animations are finished
         setTimeout(() => {
-        this.setState({ iskeyboardDisabled: false, isMouseDisabled: false });
+          this.setState({ iskeyboardDisabled: false, isMouseDisabled: false });
         }, (visitedOrder.length + nodesInShortestPathOrder.length + 1) * this.state.animationDelay);
         // Set new grid
         this.setState({ grid: newGrid });
@@ -484,7 +488,7 @@ export default class PathfindingVisualiser extends Component {
         const startNode = newGrid[startRow][startColumn];
         const finishNode = newGrid[endRow][endColumn];
         const animations = false;
-        // Run dijkstra's with temp grid, no animations, start node, and ending node
+        // Run astar's with temporary grid, no animations, start node, and ending node
         astar.aStarAlgorithm(newGrid, animations, startNode, finishNode);
         this.setState({ instantAnimations: true });
         return newGrid;
@@ -496,69 +500,99 @@ export default class PathfindingVisualiser extends Component {
         this.setState({ iskeyboardDisabled: true });
         this.setState({ isMouseDisabled: true });
         this.setState({ mouseIsPressed: false });
+
         // Clear node classes
         this.clearNodeClasses();
+
         // Turn off instant animations after placing walls, moving start/end nodes
         this.setState({ finishAnimations: false });
-        // Graph, node, and arrays from dijkstra's algorithm for animation
+
         const newGrid = this.state.grid.slice();
-        // Clear walls
+        // Clears all the walls to reset the grid before running the algorithm
+
         for (let i = 0; i < newGrid.length; i++) {
             for (let j = 0; j < newGrid[0].length; j++) {
                 newGrid[i][j].isWall = false;
             }
         }
+
         const startNode = newGrid[startRow][startColumn];
         const finishNode = newGrid[endRow][endColumn];
+
+        // Finds the wallVisited order after running the recursiveDivisonAlgorithm with the new reset grid, start and finish node
         let wallVisitedOrder = recursiveDiv.recursiveDivisionAlgorithm(
         newGrid,
         startNode,
         finishNode
         );
+
         const gridElem = document.getElementsByClassName("grid")[0];
+
+        // Applies class 'node-wall-animate' to the visited order of the walls in order to animate it
         for (let i = 0; i < wallVisitedOrder.length; i++) {
-        const { row, column } = wallVisitedOrder[i];
-        setTimeout(() => {
-            gridElem.children[row].children[column].classList.add("node-wall-animate");
-        }, i * this.state.animationDelay);
+          const { row, column } = wallVisitedOrder[i];
+          setTimeout(() => {
+              gridElem.children[row].children[column].classList.add("node-wall-animate");
+          }, i * this.state.animationDelay);
         }
-        console.log(newGrid[0][1]);
+
+        // Uncomment to view Object of new grid (Debugging)
+        // console.log(newGrid[0][1]);
+
         // Re-enable mouse and keyboard after animations are finished
         setTimeout(() => {
-        this.setState({ iskeyboardDisabled: false, isMouseDisabled: false });
-        this.clearNodeClasses();
+          this.setState({ iskeyboardDisabled: false, isMouseDisabled: false });
+          this.clearNodeClasses();
         }, wallVisitedOrder.length * this.state.animationDelay + 500);
+
         this.setState({ grid: newGrid });
         return;
     }
 
     // Toggles starting node prop of node hovered by mouse
-    toggleStart(grid, row, column) {
+    toggleStart = (grid, row, column) => {
+        // Do not toggle the start node if the cell being pressed is the finish node or is a wall
         if (grid[row][column].isFinish || grid[row][column].isWall) return grid;
+
         const newGrid = grid.slice();
+
+        // Used to reset isStart property to false and then toggle it
         newGrid[startRow][startColumn].isStart = false;
         newGrid[row][column].isStart = !newGrid[row][column].isStart;
+
         startColumn = column;
         startRow = row;
+
         return newGrid;
     }
 
     // Toggles finish node prop of node hovered by mouse
     toggleFinish = (grid, row, column) => {
+        // Do not toggle the finish node if the cell being pressed is the start node or is a wall
         if (grid[row][column].isStart || grid[row][column].isWall) return grid;
+
         const newGrid = grid.slice();
+
+        // Used to reset isFinish property to false and then toggle it
         newGrid[endRow][endColumn].isFinish = false;
         newGrid[row][column].isFinish = !newGrid[row][column].isFinish;
+
         endColumn = column;
         endRow = row;
+
         return newGrid;
     };
     
     // Toggles wall node prop of node hovered by mouse
     toggleWall = (grid, row, column) => {
+        // Do not toggle the wall if the cell being pressed is the start or finish node
         if (grid[row][column].isStart || grid[row][column].isFinish) return grid;
+        
         const newGrid = grid.slice();
+
+        // The new grid is the same grid as before with the altered cell having the isWall property toggled.
         newGrid[row][column].isWall = !newGrid[row][column].isWall;
+
         return newGrid;
     };
 
@@ -614,13 +648,6 @@ export default class PathfindingVisualiser extends Component {
     render() {
         // Grab current state of the grid
         const { grid } = this.state;
-        // Determine animation speed class
-        const speedBtnClass =
-          this.state.animationDelay === ANIMATION_FAST
-            ? "fast-btn"
-            : this.state.animationDelay === ANIMATION_AVG
-            ? "average-btn"
-            : "slow-btn";
         return (
           <div className="pathfindingCanvas">
             <div className="navBar">
@@ -630,6 +657,7 @@ export default class PathfindingVisualiser extends Component {
                     if (this.state.algorithm !== "") {
                         this.visualise(this.state.algorithm);
                     } else {
+                        // Validation check if no algorithm is selected
                         this.setState({ visualiseBtnText: "Select an Algorithm" });
                     }
                     }}
@@ -732,7 +760,6 @@ export default class PathfindingVisualiser extends Component {
                 Reset Animations
               </button>
               <button
-                className={speedBtnClass}
                 onClick={() => this.animationSpeed()}
                 disabled={this.state.iskeyboardDisabled}
               >
@@ -758,16 +785,16 @@ export default class PathfindingVisualiser extends Component {
                       } = node;
                       return (
                         <Node
-                          key={nodeIdx}
-                          row={row}
-                          column={column}
-                          isStart={isStart}
-                          isFinish={isFinish}
-                          isWall={isWall}
-                          isVisited={isVisited}
-                          isShortestPath={isShortestPath}
-                          isAnimated={isAnimated}
-                          fcost={fcost}
+                          key = {nodeIdx}
+                          row = {row}
+                          column = {column}
+                          isStart = {isStart}
+                          isFinish = {isFinish}
+                          isWall = {isWall}
+                          isVisited = {isVisited}
+                          isShortestPath = {isShortestPath}
+                          isAnimated = {isAnimated}
+                          fcost = {fcost}
                           onMouseDown={(e) =>
                             this.handleMouseDown(e, row, column, isStart, isFinish)
                           }
@@ -784,8 +811,8 @@ export default class PathfindingVisualiser extends Component {
         );
       }
     }
-    //End of rendering  
-    
+    //End of rendering
+
 
 // Creates the initial grid filled with nodes using a two dimensional array
 const createGrid = () => {
@@ -793,6 +820,7 @@ const createGrid = () => {
     for (let row = 0; row < rowLength; row++) {
       const currentRow = [];
       for (let column = 0; column < columnLength; column++) {
+        // Pushes a node into each (column, row)
         currentRow.push(createNode(column, row));
       }
       grid.push(currentRow);
@@ -800,7 +828,7 @@ const createGrid = () => {
     return grid;
   };
 
-  // Creates blank node
+  // Creates a blank node
   const createNode = (column, row) => {
     return {
       column,
@@ -818,7 +846,7 @@ const createGrid = () => {
       isShortestPath: false,
 
 
-      // A Star* Variables
+      // A Star specific Variables
       fcost: Infinity,
       gcost: Infinity,
       heuristicCost: Infinity,
@@ -827,12 +855,3 @@ const createGrid = () => {
       rank: 0,
     };
   };
-  
-
-  /*
-  Additional potential features
-  Add counter to show how many nodes traversed and in how much time or timer
-  Use file handling to load in previous mazes
-  Mention time complexity (?)
-  Add tables
-  */

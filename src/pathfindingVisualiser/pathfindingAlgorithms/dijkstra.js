@@ -55,10 +55,10 @@ const dijkstra = (grid, animations, startNode, finishNode) => {
       }
     }
   }
-  // Returns a list of neighbours around node that are unvisited
+
 // Returns a list of neighbours around node that are unvisited.
 function getUnvisitedNeighbours(node, grid) {
-  // Initialise neighbours node and grab the columnumn and row property from the node in the parameter
+  // Initialise neighbours node and grab the column and row property from the node in the parameter
   const neighbours = [];
   const { column, row } = node;
 

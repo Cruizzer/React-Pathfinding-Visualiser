@@ -6,13 +6,13 @@ export default class PriorityQueue {
     enqueue(node) {
       var added = false;
       for(let i = 0; i < this.arr.length; i++) {
-        if(this.arr[i].dist > node.dist) { //Compares the distance for each node
-          this.arr.splice(i, 0, node); //Makes the greater distance value higher in priority
+        if(this.arr[i].dist > node.dist) { // Compares the distance of each node in the array with the current node being enqueued
+          this.arr.splice(i, 0, node); // Add the new node  the greater distance value higher in priority
           added = true;
-          break; //Terminates for loop after node is added to the queue
+          break; // Terminates for loop after node is added to the queue
         }
       }
-      if(!added) this.arr.push(node); //If the node has not been added (due to a lower distance) push it to the end of the queue 
+      if(!added) this.arr.push(node); // If the node has not been added (due to a lower distance) push it to the end of the queue 
     }
     
     dequeue() {
