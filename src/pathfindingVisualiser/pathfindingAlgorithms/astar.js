@@ -8,16 +8,16 @@ function aStar(grid, animations, startNode, finishNode) {
     // Instantiates the initial values, Starting node has 0 weight (0 gcost);
     startNode.heuristicCost = calculateHeuristicValue(startNode, finishNode);
     startNode.gcost = 0;
-    //fcost = heuristicCost since gcost = 0 at the initial node.
+    // fcost = heuristicCost since gcost = 0 at the initial node.
     startNode.fcost = startNode.heuristicCost;
-    //Enqueues the startNode.
+    // Enqueues the startNode.
     openSet.enqueue(startNode);
   
     // visitedNodesSet represents the closed set.
     let visitedNodesSet = [];
 
     // Runs the algorithm
-    while (!openSet.isEmpty()) { //While there are still nodes in the openSet.
+    while (!openSet.isEmpty()) { // While there are still nodes in the openSet.
         // Extract the node with the least f cost in the openSet.
         let current = openSet.dequeue();
         // Alter the isVisited node property.

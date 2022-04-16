@@ -8,15 +8,15 @@
     height: calc(79vh / 28);
   }
   .node-finish {
-    border: 1px solid lightcoral;
-    background-color: lightcoral;
+    border: 1px solid #B31225;
+    background-color: #B31225 !important;
     background-position: center;
     background-size: contain;
     background-repeat: no-repeat;
   }
   .node-start {
-    background-color: lightgreen;
-    border: 1px solid lightgreen;
+    background-color: #0D900F !important;
+    border: 1px solid #0D900F;
     background-position: center;
     background-size: contain;
     background-repeat: no-repeat;

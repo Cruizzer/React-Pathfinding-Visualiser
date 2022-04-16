@@ -33,6 +33,19 @@
   font-weight: bold;
 }
 
+.counters {
+  background-color: #FE0060;
+  color: white;
+  border: none;
+  border-radius: 25px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 20px;
+  padding: 15px 30px;
+  margin: 0px 25px 0px 25px;
+}
+
 /* General Button styles */
 button {
   background-color: #272760;

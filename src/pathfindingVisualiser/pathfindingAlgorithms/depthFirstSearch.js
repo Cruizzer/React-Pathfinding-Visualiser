@@ -5,10 +5,10 @@
     // Mark the node as visited so that the neightbouring nodes will not revisit it in the next stack frame.
     visitedNodesSet.push(node);
     let neighbours = getNeighbours(grid, node);
-    // First Base case
+    // Condition
     while (neighbours.length !== 0) { 
       // If the last pushed node by getNeighbours is equal to the finishNode, end the recursive calls.
-      // Second Base case.
+      // Base case.
       if (visitedNodesSet[visitedNodesSet.length - 1] === finishNode){
           return true;
       }
