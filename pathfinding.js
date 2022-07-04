@@ -11,3 +11,4 @@ class PathfindingVisualizer extends Component {
     speed: 10,
     mazeSpeed: 10,
   };
+};
